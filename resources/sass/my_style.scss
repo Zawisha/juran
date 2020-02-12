@@ -1,0 +1,150 @@
+
+//
+//.info {
+//    text-decoration:underline;
+//}
+
+.btn {
+    border: 3px solid #D46A6A;
+    border-radius: 20px;
+    padding: 3px 8px;
+
+    background: #D46A6A;
+    color: #fff;
+}
+
+.link {
+    color: #D46A6A;
+    margin-left: 100px;
+}
+
+dl {
+    border-top: 1px dashed gray;
+    margin-top: 60px;
+    padding-top: 30px;
+
+    & + dl {
+        border: none;
+        margin-top: 0;
+        padding-top: 0;
+    }
+
+    dt {
+        margin-bottom: 10px;
+        font-size: 20px;
+        color: gray;
+        &.strengths {
+            color: #D46A6A;
+        }
+    }
+
+    dd {
+        margin-bottom: 15px;
+    }
+
+    code {
+        background-color: #f9f2f4;
+        color: #c7254e;
+        border-radius: 4px;
+        padding: 1px 4px;
+    }
+}
+
+
+:root {
+    --tooltip-border-color: #313131;
+    --tooltip-text-color: #fff;
+    --tooltip-bg-color: #313131;
+}
+
+/* content */
+[tooltip]{
+    position: relative;
+
+    &::after, &::before {
+        position: absolute;
+        z-index: 10;
+
+        opacity: 0; // display: none/block, transition will not occur
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+
+    &::after {  // tooltip box
+        content: attr(tooltip); // 1. attr() get tooltip attr and set value
+
+        width: calc(100% + 200px);
+        max-width: 440px;
+        padding: 8px 15px;
+        border-radius: 4px;
+
+        white-space: pre-line;
+
+        //word-wrap:break-word;
+
+        //overflow: hidden;
+        //text-overflow: ellipsis;
+
+
+        border: 1px solid var(--tooltip-border-color);
+        background-color: var(--tooltip-bg-color);
+        color: var(--tooltip-text-color);
+    }
+
+    &::before{ // tooltip arrow
+        content: '';
+        border: 5px solid transparent;
+        border-top-color: var(--tooltip-border-color);
+    }
+
+
+    &:hover{ // mouseenter, mouseleave
+        &::after, &::before{
+            opacity: 1;
+        }
+    }
+
+    /* config */
+    &[effect="light"] { // 2. [effect="light"] get options and set themes
+        --tooltip-border-color: #313131;
+        --tooltip-text-color: #313131;
+        --tooltip-bg-color: #fff;
+    }
+
+    @each $placement in top {
+        &[placement="#{$placement}"] {
+            &::after {
+                @extend .tooltip-placement-#{$placement};
+            }
+
+            &::before {
+                @extend .triangle-placement-#{$placement};
+            }
+        }
+    }
+
+    /* default config */
+    &:not([placement]), &[placement=""] {
+        &::after {
+            @extend .tooltip-placement-top;
+        }
+
+        &::before {
+            @extend .triangle-placement-top;
+        }
+    }
+}
+
+/* positions */
+.tooltip-placement-top, .triangle-placement-top {
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.tooltip-placement-top {
+    bottom: calc(100% + 10px);  // 3. 100% here is parent height, key point
+}
+
+.triangle-placement-top {
+    bottom: calc(100%); // 4. no need add 5px, because transparent border also takes place
+}
